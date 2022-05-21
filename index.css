@@ -21,6 +21,7 @@ button {
 	border: none;
 	color: white;
  	padding: 4px;
+ 	margin: 2px;
 	text-align: center;
 	text-decoration: none;
 	display: inline-block;

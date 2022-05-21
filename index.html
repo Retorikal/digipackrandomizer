@@ -10,9 +10,6 @@
     <center><h2>Digimon Pack Randomizer</h2></center>
     <center><h4 id="statmsg">Fetching card list.. please wait..</h4><center>
 	<div class="config section">
-        <div class="flex row section right">
-            <button id="addbtn">Add different booster</button>
-        </div>
 
         <div id="boosterslist">
             <div class="flex row section" id="boosterentry">
@@ -30,16 +27,17 @@
                         Amount:
                     </label>
                     <input type="number" class="input" name="boosteramt" id="start_offset">
+                    <button id="rmbtn" onclick="removeBooster(this)">( - )</button>
                 </div>
             </div>
         </div>
-
-		<div class="flex row section right">
-            <button id="rmbtn">Remove</button>
+        <div class="flex row section right">
+            <button id="addbtn">Add booster</button>
         </div>
 
         <div class="flex row section right">
-            <button id="randombtn" disabled>Randomize!</button>
+            <button id="clearbtn">Clear cards pool</button>
+            <button id="randombtn" disabled>Open packs and add to pool</button>
         </div>
 
 	</div>
@@ -52,7 +50,7 @@
         <span class="section">Paste the following text to <a href="https://digimoncard.dev/deckbuilder">digimoncard.dev deck builder</a></span>
         <button id="copybtn">Copy output</button>
         <div class="config output" id="output">
-
+            // Good luck with your rolls.
         </div>
     </div>
 </body>

@@ -2,20 +2,27 @@ boostersContainerDOM = null;
 boosterEntryDOMs = []
 boosterEntryDOMTemplate = null;
 
-cardPool = {}
-infoCache = {}
+cardDB = {};
+infoCache = {};
+cardPool = null;
 
 window.onload = function () {
 	document.getElementById("addbtn").addEventListener("click", addBooster);
-	document.getElementById("rmbtn").addEventListener("click", removeBooster);
+	//document.getElementById("rmbtn").addEventListener("click", removeBooster);
 	document.getElementById("randombtn").addEventListener("click", randomize);
 	document.getElementById("copybtn").addEventListener("click", copyOut);
+	document.getElementById("clearbtn").addEventListener("click", clearAll);
 	
 	boosterEntryDOMTemplate = document.getElementById("boosterentry").cloneNode(true);
 	boostersContainerDOM = document.getElementById("boosterslist");
 	boosterEntryDOMs.push(document.getElementById("boosterentry"));
 
 	fetchCards();
+}
+
+function clearAll(){
+	cardPool = null;
+	document.getElementById("output").innerText = "// List reset!";
 }
 
 function copyOut(){
@@ -29,26 +36,33 @@ function addBooster (){
 	boosterEntryDOMs.push(clone);
 }
 
-function removeBooster (){
-	let clone = boosterEntryDOMs.pop();
+function removeBooster (e){
+	let clone = e.parentElement.parentElement;
+	let index = boosterEntryDOMs.indexOf(clone);
+	boosterEntryDOMs.splice(index, 1);
 	clone.remove();
 }
 
 function randomize (){
-	let output = openBoosters();
+	output = openBoosters(cardPool);
+	console.log(output);
 	if(!output) return;
 
-	let cards = output.cards;
-	let info = output.count;
-	let padlen = output.longestName + 3;
+	cardPool = output;
 
-	let infostring = `// You got ${info[0]} C, ${info[1]} U, ${info[2]} R, ${info[3]} SR, and ${info[5]} SEC\n`
-	infostring += "// Please use digimoncard.dev to convert export formats if needed\n"
+	let cards = cardPool.cards;
+	let count = cardPool.count;
+	let newCount = cardPool.newCount;
+	let newSet = cardPool.newCards
+	let padlen = cardPool.longestName + 3;
+
+	let infostring = `// You have ${count[0]} C, ${count[1]} U, ${count[2]} R, ${count[3]} SR, and ${count[5]} SEC\n`
+	infostring += `// You got ${newCount[0]} C, ${newCount[1]} U, ${newCount[2]} R, ${newCount[3]} SR, and ${newCount[5]} SEC from last opening\n`
+	infostring += "// Please use digimoncard.dev to convert export formats if needed\n\n"
 	for(cardid in cards){
-		infostring += `${cards[cardid]} ${infoCache[cardid].n}`.padEnd(padlen, '\xa0') + `${cardid}\n`;
+		let newNotif = newSet.has(cardid) ? " //NEW!" : "";
+		infostring += `${cards[cardid]} ${infoCache[cardid].n}`.padEnd(padlen, '\xa0') + `${cardid}${newNotif}\n`;
 	}
-
-	console.log(output);
 	console.log(infostring);
 	document.getElementById("output").innerText = infostring;
 }
@@ -66,15 +80,15 @@ async function fetchCards () {
 		let rarity = card.rare; // {0: C, 1: U, 2: R, 3: SR, 4: P, 5: SER}
 		let type = card.cardtype; // {1: Tama, 2: Mon, 3: Tamer, 4: Option}
 
-		if(!cardPool.hasOwnProperty(pack)){
-			cardPool[pack] = {allcards:{}, opttamer:{}};
+		if(!cardDB.hasOwnProperty(pack)){
+			cardDB[pack] = {allcards:{}, opttamer:{}};
 		}
 
 		infoCache[id] = {r:rarity, n:name};
 
 		// Distribute to random pool
-		let opttamer = cardPool[pack].opttamer;
-		let allcards = cardPool[pack].allcards;
+		let opttamer = cardDB[pack].opttamer;
+		let allcards = cardDB[pack].allcards;
 
 		if (type >= 3){
 			if(!opttamer.hasOwnProperty(rarity))
@@ -90,13 +104,13 @@ async function fetchCards () {
 	}
 
 	// Transform all set into list to support randomization
-	for(pack in cardPool){
-		for(r in cardPool[pack].allcards){
-			cardPool[pack].allcards[r] = Array.from(cardPool[pack].allcards[r]);
+	for(pack in cardDB){
+		for(r in cardDB[pack].allcards){
+			cardDB[pack].allcards[r] = Array.from(cardDB[pack].allcards[r]);
 		}
 
-		for(r in cardPool[pack].opttamer){
-			cardPool[pack].opttamer[r] = Array.from(cardPool[pack].opttamer[r]);
+		for(r in cardDB[pack].opttamer){
+			cardDB[pack].opttamer[r] = Array.from(cardDB[pack].opttamer[r]);
 		}
 	}
 
@@ -110,7 +124,7 @@ function sample(array){
 
 function openOneBooster(pack){
 	let cards = [];
-	let boosterPool = cardPool[pack];
+	let boosterPool = cardDB[pack];
 
 	if(!boosterPool){
 		alert(`You are trying to randomize from ${pack}. Check if that pack exists.`);
@@ -132,7 +146,7 @@ function openOneBooster(pack){
 	return cards;
 }
 
-function openBoosters() {
+function openBoosters(previous = null) {
 	// Gather selected booster data and amount
 	let boosterCount = {};
 
@@ -147,9 +161,12 @@ function openBoosters() {
     	boosterCount["BT" + boosterData['boosterid']] = boosterData['boosteramt'];
     })
 
-	let acquiredCardList = {};
-	let rarityCount = {0:0, 1:0, 2:0, 3:0, 5:0};
-	let longestName = 0
+	let acquiredCardList = previous ? previous.cards : {};
+	let rarityCount = previous ? previous.count : {0:0, 1:0, 2:0, 3:0, 5:0};
+	let longestName = previous ? previous.longestName : 0;
+
+	let newRarityCount = {0:0, 1:0, 2:0, 3:0, 5:0};
+	let newCards = new Set();
 
     for(boosterID in boosterCount){
     	for(let i = 0; i < boosterCount[boosterID]; i++){
@@ -159,10 +176,18 @@ function openBoosters() {
     		for (const card of cards) {
 				acquiredCardList[card] = acquiredCardList[card] ? acquiredCardList[card] + 1 : 1;
 				rarityCount[infoCache[card].r] += 1;
+				newRarityCount[infoCache[card].r] += 1;
 				longestName = Math.max(infoCache[card].n.length, longestName);
+				newCards.add(card);
 			}
     	}
     }
 
-    return {cards:acquiredCardList, count:rarityCount, longestName: longestName};
+    return {
+    	cards:acquiredCardList, 
+    	count:rarityCount, 
+    	newCount:newRarityCount,
+    	newCards:newCards,
+    	longestName: longestName
+    };
 }
