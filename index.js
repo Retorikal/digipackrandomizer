@@ -6,6 +6,8 @@ cardDB = {};
 infoCache = {};
 cardPool = null;
 
+rarityDict = ['C\xa0\xa0', 'U\xa0\xa0', 'R\xa0\xa0', 'SR\xa0', 'P\xa0\xa0', 'SER']
+
 window.onload = function () {
 	document.getElementById("addbtn").addEventListener("click", addBooster);
 	//document.getElementById("rmbtn").addEventListener("click", removeBooster);
@@ -60,8 +62,8 @@ function randomize (){
 	infostring += `// You got ${newCount[0]} C, ${newCount[1]} U, ${newCount[2]} R, ${newCount[3]} SR, and ${newCount[5]} SEC from last opening\n`
 	infostring += "// Please use digimoncard.dev to convert export formats if needed\n\n"
 	for(cardid in cards){
-		let newNotif = newSet.has(cardid) ? " //NEW!" : "";
-		infostring += `${cards[cardid]} ${infoCache[cardid].n}`.padEnd(padlen, '\xa0') + `${cardid}${newNotif}\n`;
+		let infoNotif = `// ${rarityDict[infoCache[cardid].r]} ${newSet.has(cardid) ? "NEW!" : ""}`;
+		infostring += `${cards[cardid]} ${infoCache[cardid].n}`.padEnd(padlen, '\xa0') + `${cardid} ${infoNotif}\n`;
 	}
 	console.log(infostring);
 	document.getElementById("output").innerText = infostring;
