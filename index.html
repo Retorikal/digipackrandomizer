@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<link rel="stylesheet" href="/index.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+    <script src="/index.js"></script>
+</head>
+<body style="width: 600px">
+
+    <center><h2>Digimon Pack Randomizer</h2></center>
+    <center><h4 id="statmsg">Fetching card list.. please wait..</h4><center>
+	<div class="config section">
+        <div class="flex row section right">
+            <button id="addbtn">Add different booster</button>
+        </div>
+
+        <div id="boosterslist">
+            <div class="flex row section" id="boosterentry">
+                <div>
+                    <label for="boosterid"class="tooltip"
+                    title="Booster ID">
+                        BT-
+                    </label>
+                    <input type="number" class="input" name="boosterid" id="start_offset">
+                </div>
+
+                <div>
+                    <label for="boosteramt" class="tooltip"
+                    title="Booster amount">
+                        Amount:
+                    </label>
+                    <input type="number" class="input" name="boosteramt" id="start_offset">
+                </div>
+            </div>
+        </div>
+
+		<div class="flex row section right">
+            <button id="rmbtn">Remove</button>
+        </div>
+
+        <div class="flex row section right">
+            <button id="randombtn" disabled>Randomize!</button>
+        </div>
+
+	</div>
+    <a class="flex row sponsor section gopay" target="_blank" href="https://trakteer.id/Retorikal">
+        <img class="inline" src="/icons/gopay.svg">
+        <span class="inline">Support at trakteer.id</span>
+    </a>
+
+    <div>
+        <span class="section">Paste the following text to <a href="https://digimoncard.dev/deckbuilder">digimoncard.dev deck builder</a></span>
+        <button id="copybtn">Copy output</button>
+        <div class="config output" id="output">
+
+        </div>
+    </div>
+</body>
+</html>

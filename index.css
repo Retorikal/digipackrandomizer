@@ -1,0 +1,109 @@
+body{
+	font-family: 'Roboto', sans-serif;
+	background-color: #f9f9f9
+}
+
+h2{
+	color: #036;
+}
+
+h4{
+	color: #06b;
+}
+
+*{
+	font-family: inherit;
+	box-sizing: border-box
+}
+
+button {
+	background-color: #06b;
+	border: none;
+	color: white;
+ 	padding: 4px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	cursor: pointer;
+}
+
+button:active{
+	background-color: #036;
+}
+
+
+button:disabled{
+	background-color: #888;
+}
+
+.flex{
+	display: flex;
+	justify-content: space-between;
+}
+
+.row{
+	flex-direction: row;
+}
+
+.section{
+	margin-bottom: 5px;
+}
+
+.output{
+	margin: 5px;
+	padding: 10px;
+	text-align: left;
+	font-family:'Lucida Console';
+	font-size: 0.75em;
+	monospace;
+}
+
+.right{
+	justify-content: flex-end;
+}
+
+.tooltip{
+	cursor: help;
+	color: #036;
+}
+
+.input{
+	width: 50px;
+}
+
+.sponsor{
+	padding: 4px;
+	border-radius: 10px;
+	color: white;
+	opacity: 0.8;
+}
+
+.gopay{
+	background-color: #036;
+}
+
+.github{
+	background-color: #111;
+}
+
+.config{
+	background-color: #dddddd;
+	padding: 5px; 
+}
+
+.inline{
+	display: inline-block;
+	vertical-align: middle;
+	padding-right: 3px;
+	height: 16px;
+	width: auto;
+}
+
+.baseline {
+	align-items: baseline;
+}
+
+.link {
+	color: #06b;
+	font-weight: bold;
+}
